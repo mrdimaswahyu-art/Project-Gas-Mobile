@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garuda Auto Service — Dashboard Bengkel</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigasi Atas -->
+    <header class="navbar">
+        <div class="nav-brand">
+            🚗 Garuda Auto Service
+        </div>
+        <div class="nav-user">
+            <span>Halo, <strong id="currentUsername">Staf</strong></span>
+            <button onclick="logout()" class="btn btn-secondary btn-sm">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Toolbar Pencarian & Filter -->
+        <div class="toolbar">
+            <div class="toolbar-controls">
+                <input type="text" id="searchInput" class="form-control toolbar-search" placeholder="🔍 Cari plat nomor, tipe mobil, atau nama konsumen...">
+                <select id="brandFilter" class="form-control toolbar-filter">
+                    <option value="">Semua Merk Mobil</option>
+                </select>
+            </div>
+            <button onclick="openCustomerModal()" class="btn btn-primary">+ Tambah Konsumen</button>
+        </div>
+
+        <div id="alertFeedback" class="alert"></div>
+
+        <!-- Daftar Konsumen & Riwayat -->
+        <div id="customerList" class="card-list">
+            <!-- Kartu konsumen akan dirender via JavaScript -->
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>Belum Ada Data</h3>
+            <p>Tidak ditemukan data konsumen atau kendaraan yang sesuai dengan pencarian.</p>
+        </div>
+    </div>
+
+    <!-- Modal Form Konsumen (Tambah / Edit) -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="customerModalTitle">Tambah Konsumen Baru</h2>
+                <button type="button" class="close-btn" onclick="closeCustomerModal()">&times;</button>
+            </div>
+            <form id="customerForm">
+                <input type="hidden" id="customerId">
+                <div class="form-group">
+                    <label for="custName">Nama Konsumen *</label>
+                    <input type="text" id="custName" class="form-control" placeholder="Contoh: Budi Santoso" required>
+                </div>
+                <div class="form-group">
+                    <label for="custPhone">No. Telepon / WhatsApp</label>
+                    <input type="text" id="custPhone" class="form-control" placeholder="Contoh: 081234567890">
+                </div>
+                <div class="form-group">
+                    <label for="custAddress">Alamat Konsumen</label>
+                    <textarea id="custAddress" class="form-control" rows="2" placeholder="Alamat tinggal / domisili"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="custPlate">Plat Nomor Kendaraan *</label>
+                    <input type="text" id="custPlate" class="form-control" placeholder="Contoh: B 1234 XYZ" required>
+                </div>
+                <div class="form-group">
+                    <label for="custBrand">Merk Mobil *</label>
+                    <input type="text" id="custBrand" class="form-control" placeholder="Contoh: Toyota, Honda, Suzuki" required>
+                </div>
+                <div class="form-group">
+                    <label for="custType">Tipe Mobil *</label>
+                    <input type="text" id="custType" class="form-control" placeholder="Contoh: Avanza 1.3 G, Brio Satya" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeCustomerModal()" class="btn btn-secondary">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveCustomer">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Riwayat Servis -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="serviceModalTitle">Tambah Riwayat Servis</h2>
+                <button type="button" class="close-btn" onclick="closeServiceModal()">&times;</button>
+            </div>
+            <form id="serviceForm">
+                <input type="hidden" id="serviceCustomerId">
+                <div class="form-group">
+                    <label for="serviceDate">Tanggal Servis *</label>
+                    <input type="date" id="serviceDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="serviceMileage">Kilometer (KM) Saat Ini</label>
+                    <input type="number" id="serviceMileage" class="form-control" placeholder="Contoh: 45000">
+                </div>
+                <div class="form-group">
+                    <label for="serviceDesc">Rincian Servis / Pengerjaan *</label>
+                    <textarea id="serviceDesc" class="form-control" rows="3" placeholder="Contoh: Ganti oli mesin Shell 10W-40, filter oli, kuras air radiator" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="nextServiceDate">Estimasi Jadwal Servis Berikutnya (Follow Up)</label>
+                    <input type="date" id="nextServiceDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="nextMileage">Estimasi KM Servis Berikutnya</label>
+                    <input type="number" id="nextMileage" class="form-control" placeholder="Contoh: 50000">
+                </div>
+                <div class="form-group">
+                    <label for="serviceNotes">Catatan Tambahan / Keluhan</label>
+                    <input type="text" id="serviceNotes" class="form-control" placeholder="Contoh: Bunyi decit saat rem mendadak">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeServiceModal()" class="btn btn-secondary">Batal</button>
+                    <button type="submit" class="btn btn-success">Simpan Servis</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tampil Detail Riwayat Servis -->
+    <div id="viewHistoryModal" class="modal">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="modal-header">
+                <h2 id="viewHistoryTitle">Riwayat Servis Kendaraan</h2>
+                <button type="button" class="close-btn" onclick="closeViewHistoryModal()">&times;</button>
+            </div>
+            <div id="viewHistoryCustomerInfo" style="margin-bottom: 1rem; font-size: 0.9rem;"></div>
+            <div id="viewHistoryTableContainer">
+                <!-- Tabel riwayat disuntikkan melalui JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeViewHistoryModal()" class="btn btn-secondary">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

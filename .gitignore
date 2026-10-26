@@ -1,0 +1,16 @@
+# Environment variables
+.env
+
+# Binaries & executable
+app
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# OS specific files
+.DS_Store
+Thumbs.db

@@ -7,33 +7,37 @@
 ## 1. Informasi Aplikasi
 
 **Nama aplikasi:**  
-`[Isi nama aplikasi]`
+`[Garuda Auto Service Mobile]`
 
 **Deskripsi aplikasi:**  
-`[Jelaskan tujuan aplikasi dalam 1–3 kalimat]`
+`[1. Menyimpan data kendaraan konsumen. (nama konsumen, alamat konsumen, plat nomor kendaraan ,merk mobil dan riwayat service kendaraan)
+2. memudahkan kita melihat riwayat service kendaraan konsumen di bengkel kami
+3. memudahkan follow up konsummen jika sudah tiba waktunya untuk service kendaraan]`
 
 **Target pengguna:**  
-`[Siapa yang akan menggunakan aplikasi?]`
+`[Saya dan tim Garuda Auto Service]`
 
 **Masalah yang ingin diselesaikan:**  
-`[Jelaskan masalah yang ingin diselesaikan oleh aplikasi]`
+`1. [Kemudahan untuk melihat riwayat service kendaraan konsumen
+2. memudahkan untuk mengingatkan jadwal service kendaraan untuk meningkatan kualitas pelayanan
+3. kemudahan pencarian data konsumen]`
 
 ## 2. Kebutuhan Aplikasi
 
 Fitur utama aplikasi:
 
-1. `[Fitur utama 1]`
-2. `[Fitur utama 2]`
-3. `[Fitur utama 3]`
-4. `[Fitur tambahan, jika ada]`
+1. `[Menu pencarian data riwayat melalui plat nomor dan type mobil, yang dapat melihat nama konsumen, alamat konsumen, plat nomor, merk mobil dan riwayat service kendaaran]`
+2. `[Kolom Filter Merk Mobil]`
+3. `[Kolom menambah. edit dan menghapus data konsumen]`
+4. `[]`
 
 **Halaman aplikasi:**
 
 - Login
 - Register
-- Main Page — My Notes
+- Main Page — Gas Auto Service
 
-Pada Main Page, pengguna dapat melihat daftar catatan, membuat catatan, mengedit, menghapus, dan logout.
+Pada Main Page, pengguna dapat melihat daftar menu pencarian, membuat catatan, mengedit, menghapus, dan logout.
 
 ## 3. Pilihan Teknologi
 
@@ -41,8 +45,8 @@ Pilih satu opsi untuk setiap komponen yang diperlukan. Sesuaikan dengan kebutuha
 
 ### A. Backend Framework
 
-- [ ] 1. Go Standard Library (`net/http`)
-- [ ] 2. Gin
+- [] 1. Go Standard Library (`net/http`)
+- [x] 2. Gin
 - [ ] 3. Lainnya sebutkan
 
 **Pilihan saya:** `[Isi nomor pilihan]`
@@ -50,7 +54,7 @@ Pilih satu opsi untuk setiap komponen yang diperlukan. Sesuaikan dengan kebutuha
 ### B. ORM (Object-Relational Mapping)
 
 - [ ] 1. Tidak menggunakan ORM (SQL manual)
-- [ ] 2. GORM
+- [x] 2. GORM
 - [ ] 3. Lainnya sebutkan
 
 **Pilihan saya:** `[Isi nomor pilihan]`
@@ -59,7 +63,7 @@ Pilih satu opsi untuk setiap komponen yang diperlukan. Sesuaikan dengan kebutuha
 
 ### C. Database
 
-- [ ] 1. PostgreSQL
+- [x] 1. PostgreSQL
 - [ ] 2. MySQL
 - [ ] 3. SQLite
 
@@ -152,13 +156,13 @@ SESSION_SECRET=replace-with-a-random-secret
 
 ## 6. Batasan Pengembangan (BOLEH DIUBAH SESUAI KEINGINAN PESERTA PELATIHAN)
 
-- [ ] Struktur folder sederhana.
-- [ ] Kode mudah dipahami pemula.
-- [ ] Tidak menambahkan teknologi di luar pilihan tanpa persetujuan.
-- [ ] Memisahkan frontend dan backend.
-- [ ] Menggunakan environment variable untuk konfigurasi.
-- [ ] Membuat pengujian dasar.
-- [ ] Menjelaskan kode dan perubahan yang dibuat AI.
+- [x] Struktur folder sederhana.
+- [x] Kode mudah dipahami pemula.
+- [x] Tidak menambahkan teknologi di luar pilihan tanpa persetujuan.
+- [x] Memisahkan frontend dan backend.
+- [x] Menggunakan environment variable untuk konfigurasi.
+- [x] Membuat pengujian dasar.
+- [x] Menjelaskan kode dan perubahan yang dibuat AI.
 
 **Batasan tambahan:**
 `[Isi jika ada]`
@@ -172,12 +176,12 @@ Tuliskan fitur yang tidak perlu dibuat agar ruang lingkup proyek tetap jelas.
 
 ## 7. Pemeriksaan Sebelum Vibe Coding (BOLEH DIUBAH SESUAI KEINGINAN PESERTA PELATIHAN)
 
-- [ ] Nama dan tujuan aplikasi sudah jelas.
-- [ ] Fitur utama sudah ditentukan.
-- [ ] Pilihan teknologi sudah diisi.
-- [ ] Kebutuhan autentikasi sudah ditentukan.
-- [ ] Batasan proyek sudah ditentukan.
-- [ ] Penggunaan `.env` dan `DATABASE_URL` sudah ditentukan.
+- [x] Nama dan tujuan aplikasi sudah jelas.
+- [x] Fitur utama sudah ditentukan.
+- [x] Pilihan teknologi sudah diisi.
+- [x] Kebutuhan autentikasi sudah ditentukan.
+- [x] Batasan proyek sudah ditentukan.
+- [x] Penggunaan `.env` dan `DATABASE_URL` sudah ditentukan.
 
 **Status spesifikasi:** Siap untuk diperiksa dan disetujui sebelum implementasi.
 
