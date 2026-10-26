@@ -58,10 +58,7 @@ func main() {
 		api.DELETE("/services/:id", handlers.DeleteServiceHistory)
 	}
 
-	port := os.Getenv("APP_PORT")
-	if port == "" {
-		port = os.Getenv("PORT")
-	}
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
