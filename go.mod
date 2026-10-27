@@ -1,6 +1,6 @@
 module go_vibe
 
-go 1.27.1 // hostless rebuild
+go 1.27.1
 
 require (
 	github.com/gin-gonic/gin v1.12.0
