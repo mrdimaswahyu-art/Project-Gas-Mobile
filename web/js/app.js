@@ -84,6 +84,18 @@ async function fetchCustomers() {
 function renderCustomerList(customers) {
     customerList.innerHTML = "";
 
+    // Perbarui statistik ringkas pada hero
+    const statVehicles = document.getElementById("statVehicles");
+    const statServices = document.getElementById("statServices");
+    if (statVehicles) statVehicles.textContent = customers ? customers.length : 0;
+    if (statServices) {
+        const totalServices = (customers || []).reduce(
+            (total, cust) => total + (cust.services ? cust.services.length : 0),
+            0
+        );
+        statServices.textContent = totalServices;
+    }
+
     if (!customers || customers.length === 0) {
         emptyState.style.display = "block";
         return;

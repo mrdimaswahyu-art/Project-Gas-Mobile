@@ -28,6 +28,7 @@ func main() {
 	// Sajikan file statis frontend (HTML, CSS, JS)
 	router.Static("/css", "./web/css")
 	router.Static("/js", "./web/js")
+	router.StaticFile("/favicon.svg", "./web/favicon.svg")
 	router.StaticFile("/", "./web/index.html")
 	router.StaticFile("/login", "./web/login.html")
 	router.StaticFile("/register", "./web/register.html")
