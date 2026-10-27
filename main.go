@@ -27,8 +27,8 @@ const indexHTML = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#9d0208">
     <title>Garuda Auto Service — Dashboard Bengkel</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
+    <link rel="stylesheet" href="/css/style.css?v=3">
 </head>
 <body>
     <!-- Navigasi Atas -->
@@ -306,8 +306,8 @@ const indexHTML = `<!DOCTYPE html>
         </div>
     </div>
 
-    <script src="/js/auth.js"></script>
-    <script src="/js/app.js"></script>
+    <script src="/js/auth.js?v=3"></script>
+    <script src="/js/app.js?v=3"></script>
 </body>
 </html>
 `
@@ -319,8 +319,8 @@ const loginHTML = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#7a0016">
     <title>Login — Garuda Auto Service</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
+    <link rel="stylesheet" href="/css/style.css?v=3">
 </head>
 <body class="auth-wrapper">
     <!-- Dekorasi jalan & mobil -->
@@ -368,7 +368,7 @@ const loginHTML = `<!DOCTYPE html>
         </div>
     </div>
 
-    <script src="/js/auth.js"></script>
+    <script src="/js/auth.js?v=3"></script>
     <script>
         redirectIfLoggedIn();
 
@@ -422,8 +422,8 @@ const registerHTML = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#7a0016">
     <title>Registrasi Staf — Garuda Auto Service</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
+    <link rel="stylesheet" href="/css/style.css?v=3">
 </head>
 <body class="auth-wrapper">
     <!-- Dekorasi jalan & mobil -->
@@ -475,7 +475,7 @@ const registerHTML = `<!DOCTYPE html>
         </div>
     </div>
 
-    <script src="/js/auth.js"></script>
+    <script src="/js/auth.js?v=3"></script>
     <script>
         redirectIfLoggedIn();
 
