@@ -1,0 +1,161 @@
+{
+  "_tentang_file": "Contoh format JSON untuk aplikasi Garuda Auto Service. File ini bukan data asli, hanya contoh untuk dipelajari pelan-pelan.",
+  "_cara_memakai": [
+    "Baca bagian 1 terlebih dahulu, lalu bandingkan dengan bagian 2.",
+    "Bagian request_body adalah data yang kita kirim ke server.",
+    "Bagian response adalah data contoh yang dikembalikan server.",
+    "Jangan menyalin komentar ke dalam JSON karena JSON tidak mendukung komentar.",
+    "Gunakan tanda kutip dua (\") untuk semua nama field dan teks."
+  ],
+  "_aturan_dasar_json": {
+    "objek": "Diawali { dan diakhiri }. Berisi pasangan nama_field: nilai.",
+    "array": "Diawali [ dan diakhiri ]. Berisi daftar nilai atau objek.",
+    "teks": "Harus memakai tanda kutip dua. Contoh: \"Toyota\".",
+    "angka": "Tanpa tanda kutip. Contoh: 45000.",
+    "benar_salah": "Gunakan true atau false tanpa tanda kutip.",
+    "kosong": "Gunakan null tanpa tanda kutip.",
+    "pemisah": "Antara satu field dan field lain dipisahkan koma, tetapi field terakhir tidak boleh diberi koma."
+  },
+
+  "1_tambah_konsumen": {
+    "keterangan": "Contoh mengirim data konsumen baru beserta data kendaraannya.",
+    "method": "POST",
+    "endpoint": "/api/customers",
+    "header": {
+      "Authorization": "Bearer <token-login-anda>",
+      "Content-Type": "application/json"
+    },
+    "request_body": {
+      "name": "Budi Santoso",
+      "phone": "081234567890",
+      "address": "Jl. Merdeka No. 10, Bandung",
+      "plate_number": "B 1234 XYZ",
+      "car_brand": "Toyota",
+      "car_type": "Avanza 1.3 G"
+    },
+    "response_201": {
+      "id": 1,
+      "name": "Budi Santoso",
+      "phone": "081234567890",
+      "address": "Jl. Merdeka No. 10, Bandung",
+      "plate_number": "B 1234 XYZ",
+      "car_brand": "Toyota",
+      "car_type": "Avanza 1.3 G",
+      "created_at": "2026-10-28T09:15:00Z",
+      "updated_at": "2026-10-28T09:15:00Z"
+    }
+  },
+
+  "2_tambah_riwayat_servis": {
+    "keterangan": "Contoh menambahkan riwayat servis untuk konsumen dengan id 1.",
+    "method": "POST",
+    "endpoint": "/api/customers/1/services",
+    "header": {
+      "Authorization": "Bearer <token-login-anda>",
+      "Content-Type": "application/json"
+    },
+    "request_body": {
+      "service_date": "2026-10-28",
+      "mileage": 45000,
+      "description": "Ganti oli mesin Shell 10W-40, filter oli, dan kuras air radiator",
+      "next_service_date": "2027-01-28",
+      "next_mileage": 50000,
+      "notes": "Bunyi decit saat rem mendadak sudah diperiksa, kampas rem masih 80%"
+    },
+    "response_201": {
+      "id": 10,
+      "customer_id": 1,
+      "service_date": "2026-10-28",
+      "mileage": 45000,
+      "description": "Ganti oli mesin Shell 10W-40, filter oli, dan kuras air radiator",
+      "next_service_date": "2027-01-28",
+      "next_mileage": 50000,
+      "notes": "Bunyi decit saat rem mendadak sudah diperiksa, kampas rem masih 80%",
+      "created_at": "2026-10-28T09:20:00Z",
+      "updated_at": "2026-10-28T09:20:00Z"
+    }
+  },
+
+  "3_ambil_daftar_konsumen": {
+    "keterangan": "Contoh respons saat mengambil daftar konsumen. Data riwayat servis ikut dikirim di dalam array services.",
+    "method": "GET",
+    "endpoint": "/api/customers?search=1234&brand=Toyota",
+    "header": {
+      "Authorization": "Bearer <token-login-anda>"
+    },
+    "response_200": [
+      {
+        "id": 1,
+        "name": "Budi Santoso",
+        "phone": "081234567890",
+        "address": "Jl. Merdeka No. 10, Bandung",
+        "plate_number": "B 1234 XYZ",
+        "car_brand": "Toyota",
+        "car_type": "Avanza 1.3 G",
+        "services": [
+          {
+            "id": 10,
+            "customer_id": 1,
+            "service_date": "2026-10-28",
+            "mileage": 45000,
+            "description": "Ganti oli mesin Shell 10W-40, filter oli, dan kuras air radiator",
+            "next_service_date": "2027-01-28",
+            "next_mileage": 50000,
+            "notes": "Bunyi decit saat rem mendadak sudah diperiksa, kampas rem masih 80%",
+            "created_at": "2026-10-28T09:20:00Z",
+            "updated_at": "2026-10-28T09:20:00Z"
+          }
+        ],
+        "created_at": "2026-10-28T09:15:00Z",
+        "updated_at": "2026-10-28T09:15:00Z"
+      }
+    ]
+  },
+
+  "4_statistik_bulanan": {
+    "keterangan": "Contoh respons data diagram konsumen bulanan. Contoh ini memakai ?months=3 agar mudah dibaca. Aplikasi memakai 12 bulan.",
+    "method": "GET",
+    "endpoint": "/api/stats/monthly?months=3",
+    "header": {
+      "Authorization": "Bearer <token-login-anda>"
+    },
+    "response_200": {
+      "start_month": "2026-08",
+      "end_month": "2026-10",
+      "months": [
+        {
+          "month": "2026-08",
+          "label": "Agu",
+          "year": 2026,
+          "new_customers": 4,
+          "services": 7
+        },
+        {
+          "month": "2026-09",
+          "label": "Sep",
+          "year": 2026,
+          "new_customers": 6,
+          "services": 9
+        },
+        {
+          "month": "2026-10",
+          "label": "Okt",
+          "year": 2026,
+          "new_customers": 3,
+          "services": 5
+        }
+      ],
+      "totals": {
+        "new_customers": 13,
+        "services": 21
+      }
+    }
+  },
+
+  "5_contoh_error": {
+    "keterangan": "Contoh respons jika data wajib belum diisi. Pesan error selalu berbentuk objek dengan field error.",
+    "response_400": {
+      "error": "Nama, plat nomor, merk mobil, dan tipe mobil wajib diisi"
+    }
+  }
+}

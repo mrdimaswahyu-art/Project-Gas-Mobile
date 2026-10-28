@@ -18,6 +18,7 @@ const alertFeedback = document.getElementById("alertFeedback");
 document.addEventListener("DOMContentLoaded", () => {
     loadCarBrands();
     fetchCustomers();
+    loadMonthlyStats();
 
     searchInput.addEventListener("input", debounce(() => {
         fetchCustomers();
@@ -78,6 +79,94 @@ async function fetchCustomers() {
     } catch (err) {
         showAlert("Gagal memuat daftar konsumen", "danger");
     }
+}
+
+// Mengambil statistik konsumen & servis per bulan untuk diagram batang
+async function loadMonthlyStats() {
+    const chart = document.getElementById("monthlyChart");
+    if (!chart) return;
+
+    try {
+        const res = await authFetch("/api/stats/monthly?months=12");
+        if (!res || !res.ok) {
+            renderMonthlyChart(null);
+            return;
+        }
+        renderMonthlyChart(await res.json());
+    } catch (err) {
+        console.error("Gagal memuat statistik bulanan:", err);
+        renderMonthlyChart(null);
+    }
+}
+
+// Menampilkan diagram batang konsumen baru dan riwayat servis per bulan
+function renderMonthlyChart(data) {
+    const chart = document.getElementById("monthlyChart");
+    const subtitle = document.getElementById("monthlySubtitle");
+    const monthlyCustomers = document.getElementById("monthlyCustomers");
+    const monthlyServices = document.getElementById("monthlyServices");
+    if (!chart) return;
+
+    const months = data && Array.isArray(data.months) ? data.months : [];
+
+    if (months.length === 0) {
+        chart.style.gridTemplateColumns = "1fr";
+        chart.innerHTML = '<p class="chart-empty-note">Belum ada data statistik bulanan yang bisa ditampilkan.</p>';
+        if (subtitle) subtitle.textContent = "Data 12 bulan terakhir belum tersedia.";
+        if (monthlyCustomers) monthlyCustomers.textContent = "0";
+        if (monthlyServices) monthlyServices.textContent = "0";
+        return;
+    }
+
+    // Hitung tinggi batang relatif terhadap nilai terbesar (skala 135 piksel)
+    const maxValue = Math.max(
+        1,
+        ...months.map(m => Math.max(Number(m.new_customers) || 0, Number(m.services) || 0))
+    );
+
+    chart.style.gridTemplateColumns = `repeat(${months.length}, minmax(0, 1fr))`;
+    chart.innerHTML = months.map((m, index) => {
+        const newCustomers = Number(m.new_customers) || 0;
+        const services = Number(m.services) || 0;
+        const customerHeight = newCustomers > 0
+            ? Math.max(4, Math.round((newCustomers / maxValue) * 135))
+            : 0;
+        const serviceHeight = services > 0
+            ? Math.max(4, Math.round((services / maxValue) * 135))
+            : 0;
+        const isCurrent = index === months.length - 1;
+        const tooltip = `${m.label} ${m.year}: ${newCustomers} konsumen baru, ${services} riwayat servis`;
+
+        return `
+            <div class="chart-col${isCurrent ? " is-current" : ""}" title="${escapeHtml(tooltip)}">
+                <div class="chart-bars">
+                    <div class="chart-bar bar-customer" style="height: ${customerHeight}px">
+                        ${newCustomers > 0 ? `<span>${newCustomers}</span>` : ""}
+                    </div>
+                    <div class="chart-bar bar-service" style="height: ${serviceHeight}px">
+                        ${services > 0 ? `<span>${services}</span>` : ""}
+                    </div>
+                </div>
+                <span class="chart-month">${escapeHtml(m.label)}</span>
+            </div>
+        `;
+    }).join("");
+
+    const lastMonth = months[months.length - 1];
+    if (monthlyCustomers) monthlyCustomers.textContent = Number(lastMonth.new_customers) || 0;
+    if (monthlyServices) monthlyServices.textContent = Number(lastMonth.services) || 0;
+
+    if (subtitle) {
+        const totals = data.totals || {};
+        const totalCustomers = Number(totals.new_customers) || 0;
+        const totalServices = Number(totals.services) || 0;
+        subtitle.textContent = `${months.length} bulan terakhir · total ${totalCustomers} konsumen baru dan ${totalServices} riwayat servis.`;
+    }
+
+    chart.setAttribute(
+        "aria-label",
+        `Diagram batang ${months.length} bulan terakhir. Konsumen baru bulan ini ${Number(lastMonth.new_customers) || 0}, riwayat servis bulan ini ${Number(lastMonth.services) || 0}.`
+    );
 }
 
 // Render data konsumen ke antarmuka kartu
@@ -222,6 +311,7 @@ document.getElementById("customerForm").addEventListener("submit", async (e) => 
         showAlert(isEdit ? "Data konsumen berhasil diperbarui!" : "Konsumen baru berhasil ditambahkan!");
         loadCarBrands();
         fetchCustomers();
+        loadMonthlyStats();
     } catch (err) {
         alert("Terjadi kesalahan server saat menyimpan data konsumen.");
     }
@@ -243,6 +333,7 @@ async function deleteCustomer(id, plateNumber) {
         showAlert("Data konsumen dan riwayat servis berhasil dihapus.");
         loadCarBrands();
         fetchCustomers();
+        loadMonthlyStats();
     } catch (err) {
         showAlert("Terjadi kesalahan server saat menghapus data", "danger");
     }
@@ -296,6 +387,7 @@ document.getElementById("serviceForm").addEventListener("submit", async (e) => {
         closeServiceModal();
         showAlert("Riwayat servis baru berhasil dicatat!");
         fetchCustomers();
+        loadMonthlyStats();
     } catch (err) {
         alert("Terjadi kesalahan server saat mencatat servis.");
     }
@@ -388,6 +480,7 @@ async function deleteServiceRecord(serviceId) {
             viewHistory(activeViewingCustomer.id);
         }
         fetchCustomers();
+        loadMonthlyStats();
     } catch (err) {
         alert("Terjadi kesalahan server saat menghapus catatan.");
     }

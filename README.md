@@ -15,6 +15,18 @@ Aplikasi web manajemen pelanggan, data kendaraan, dan riwayat servis untuk bengk
 5. **Manajemen Riwayat Servis:**
    - Catat tanggal servis, kilometer (KM), rincian pengerjaan servis, dan jadwal follow-up servis berikutnya (tanggal & KM).
    - Penghapusan otomatis (*cascade delete*) jika data konsumen dihapus.
+6. **Diagram Konsumen Bulanan:**
+   - Menampilkan jumlah konsumen baru dan riwayat servis per bulan selama 12 bulan terakhir.
+
+## Belajar Format JSON
+
+Bagi yang ingin mempelajari bentuk data API secara perlahan:
+
+- [`docs/contoh-format-json.json`](docs/contoh-format-json.json) — contoh request dan response JSON yang valid.
+- [`docs/belajar-json.md`](docs/belajar-json.md) — penjelasan field, aturan JSON, dan latihan bertahap.
+
+Endpoint statistik bulanan: `GET /api/stats/monthly?months=12`
+(nilai `months` yang diizinkan 1–24).
 
 ## Cara Menjalankan Aplikasi
 

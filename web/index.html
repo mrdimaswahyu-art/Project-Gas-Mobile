@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#9d0208">
     <title>Garuda Auto Service — Dashboard Bengkel</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
-    <link rel="stylesheet" href="/css/style.css?v=3">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4">
+    <link rel="stylesheet" href="/css/style.css?v=4">
 </head>
 <body>
     <!-- Navigasi Atas -->
@@ -161,6 +161,34 @@
             </div>
         </section>
 
+        <!-- Statistik Bulanan -->
+        <section class="monthly-panel" aria-labelledby="monthlyTitle">
+            <div class="monthly-head">
+                <div>
+                    <span class="panel-kicker">Statistik Bulanan</span>
+                    <h2 id="monthlyTitle">Diagram Konsumen Bulanan</h2>
+                    <p class="monthly-subtitle" id="monthlySubtitle">Memuat data 12 bulan terakhir...</p>
+                </div>
+                <div class="monthly-summary" aria-label="Ringkasan bulan ini">
+                    <div class="summary-pill">
+                        <span id="monthlyCustomers">0</span>
+                        <small>Konsumen Bulan Ini</small>
+                    </div>
+                    <div class="summary-pill">
+                        <span id="monthlyServices">0</span>
+                        <small>Servis Bulan Ini</small>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-legend">
+                <span class="legend-item"><i class="legend-dot dot-customer"></i> Konsumen Baru</span>
+                <span class="legend-item"><i class="legend-dot dot-service"></i> Riwayat Servis</span>
+            </div>
+            <div class="chart-scroll">
+                <div id="monthlyChart" class="monthly-chart" role="img" aria-label="Diagram batang jumlah konsumen baru dan riwayat servis per bulan"></div>
+            </div>
+        </section>
+
         <!-- Toolbar Pencarian & Filter -->
         <div class="toolbar">
             <div class="toolbar-controls">
@@ -284,7 +312,7 @@
         </div>
     </div>
 
-    <script src="/js/auth.js?v=3"></script>
-    <script src="/js/app.js?v=3"></script>
+    <script src="/js/auth.js?v=4"></script>
+    <script src="/js/app.js?v=4"></script>
 </body>
 </html>

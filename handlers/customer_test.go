@@ -34,6 +34,7 @@ func setupTestRouter() *gin.Engine {
 	{
 		api.GET("/auth/me", Me)
 		api.GET("/brands", GetCarBrands)
+		api.GET("/stats/monthly", GetMonthlyStats)
 		api.GET("/customers", GetCustomers)
 		api.GET("/customers/:id", GetCustomerByID)
 		api.POST("/customers", CreateCustomer)
@@ -151,7 +152,31 @@ func TestAuthAndCustomerFlow(t *testing.T) {
 		t.Fatalf("Tambah servis gagal: status %d, body %s", w.Code, w.Body.String())
 	}
 
-	// 5. Pencarian Pelanggan berdasarkan Plat Nomor
+	// 5. Statistik Bulanan (12 bulan terakhir)
+	req, _ = http.NewRequest(http.MethodGet, "/api/stats/monthly?months=12", nil)
+	req.Header.Set("Authorization", "Bearer "+token)
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Statistik bulanan gagal: status %d, body %s", w.Code, w.Body.String())
+	}
+
+	var stats MonthlyStatsResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &stats); err != nil {
+		t.Fatalf("Respons statistik bulanan tidak valid: %v", err)
+	}
+	if len(stats.Months) != 12 {
+		t.Fatalf("Jumlah bulan statistik harus 12, didapat %d", len(stats.Months))
+	}
+	if stats.Totals.NewCustomers < 1 {
+		t.Fatal("Total konsumen baru harus minimal 1 setelah membuat konsumen")
+	}
+	if stats.Totals.Services < 1 {
+		t.Fatal("Total servis harus minimal 1 setelah menambah riwayat servis")
+	}
+
+	// 6. Pencarian Pelanggan berdasarkan Plat Nomor
 	searchURL := "/api/customers?search=1234"
 	req, _ = http.NewRequest(http.MethodGet, searchURL, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
@@ -168,7 +193,7 @@ func TestAuthAndCustomerFlow(t *testing.T) {
 		t.Fatal("Hasil pencarian customer kosong, harusnya ditemukan")
 	}
 
-	// 6. Filter Pelanggan berdasarkan Merk
+	// 7. Filter Pelanggan berdasarkan Merk
 	filterURL := "/api/customers?brand=Toyota"
 	req, _ = http.NewRequest(http.MethodGet, filterURL, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
@@ -179,6 +204,6 @@ func TestAuthAndCustomerFlow(t *testing.T) {
 		t.Fatalf("Filter brand gagal: status %d", w.Code)
 	}
 
-	// 7. Cleanup Data Test
+	// 8. Cleanup Data Test
 	config.DB.Delete(&createdCust)
 }

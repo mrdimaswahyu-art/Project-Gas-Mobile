@@ -27,8 +27,8 @@ const indexHTML = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#9d0208">
     <title>Garuda Auto Service — Dashboard Bengkel</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
-    <link rel="stylesheet" href="/css/style.css?v=3">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4">
+    <link rel="stylesheet" href="/css/style.css?v=4">
 </head>
 <body>
     <!-- Navigasi Atas -->
@@ -183,6 +183,34 @@ const indexHTML = `<!DOCTYPE html>
             </div>
         </section>
 
+        <!-- Statistik Bulanan -->
+        <section class="monthly-panel" aria-labelledby="monthlyTitle">
+            <div class="monthly-head">
+                <div>
+                    <span class="panel-kicker">Statistik Bulanan</span>
+                    <h2 id="monthlyTitle">Diagram Konsumen Bulanan</h2>
+                    <p class="monthly-subtitle" id="monthlySubtitle">Memuat data 12 bulan terakhir...</p>
+                </div>
+                <div class="monthly-summary" aria-label="Ringkasan bulan ini">
+                    <div class="summary-pill">
+                        <span id="monthlyCustomers">0</span>
+                        <small>Konsumen Bulan Ini</small>
+                    </div>
+                    <div class="summary-pill">
+                        <span id="monthlyServices">0</span>
+                        <small>Servis Bulan Ini</small>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-legend">
+                <span class="legend-item"><i class="legend-dot dot-customer"></i> Konsumen Baru</span>
+                <span class="legend-item"><i class="legend-dot dot-service"></i> Riwayat Servis</span>
+            </div>
+            <div class="chart-scroll">
+                <div id="monthlyChart" class="monthly-chart" role="img" aria-label="Diagram batang jumlah konsumen baru dan riwayat servis per bulan"></div>
+            </div>
+        </section>
+
         <!-- Toolbar Pencarian & Filter -->
         <div class="toolbar">
             <div class="toolbar-controls">
@@ -306,8 +334,8 @@ const indexHTML = `<!DOCTYPE html>
         </div>
     </div>
 
-    <script src="/js/auth.js?v=3"></script>
-    <script src="/js/app.js?v=3"></script>
+    <script src="/js/auth.js?v=4"></script>
+    <script src="/js/app.js?v=4"></script>
 </body>
 </html>
 `
@@ -1713,6 +1741,229 @@ body {
 }
 
 /* =========================================================
+   Statistik Bulanan — diagram konsumen
+   ========================================================= */
+.monthly-panel {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem 1.35rem 1rem;
+    background: linear-gradient(180deg, var(--paper), #fff8f6);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+}
+
+/* Aksen bendera kotak-kotak di pojok panel */
+.monthly-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 130px;
+    height: 52px;
+    background: conic-gradient(var(--red-700) 25%, transparent 0 50%, var(--red-700) 0 75%, transparent 0) 0 0 / 16px 16px;
+    opacity: 0.07;
+    transform: skewX(-18deg) translateX(20px);
+    pointer-events: none;
+}
+
+.monthly-head {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.panel-kicker {
+    display: inline-block;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red-600);
+}
+
+.monthly-head h2 {
+    margin: 0.2rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.monthly-subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.monthly-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.summary-pill {
+    min-width: 118px;
+    padding: 0.55rem 0.8rem;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #2a1418, #120709);
+    border: 1px solid rgba(225, 29, 51, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.summary-pill span {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--amber);
+    font-variant-numeric: tabular-nums;
+}
+
+.summary-pill small {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.chart-legend {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.9rem;
+    padding-top: 0.7rem;
+    border-top: 1px dashed #e8cfcb;
+    font-size: 0.76rem;
+    color: var(--smoke);
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.dot-customer {
+    background: linear-gradient(180deg, var(--red-400), var(--red-700));
+}
+
+.dot-service {
+    background: linear-gradient(180deg, #5b4449, #1a0d10);
+}
+
+.chart-scroll {
+    overflow-x: auto;
+    padding: 0.2rem 0 0.35rem;
+}
+
+.monthly-chart {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+    align-items: end;
+    height: 190px;
+    min-width: 0;
+    padding-top: 1.25rem;
+    margin-top: 0.35rem;
+}
+
+.chart-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+    min-width: 0;
+}
+
+.chart-bars {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    padding: 0 2px;
+    background: repeating-linear-gradient(to top, rgba(157, 2, 8, 0.07) 0 1px, transparent 1px 25%);
+    border-bottom: 2px solid #e8cfcb;
+}
+
+.chart-bar {
+    position: relative;
+    flex: 1;
+    max-width: 22px;
+    min-height: 0;
+    border-radius: 4px 4px 1px 1px;
+    transition: height 0.45s ease;
+}
+
+.chart-bar span {
+    position: absolute;
+    top: -1.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.64rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--smoke);
+    font-variant-numeric: tabular-nums;
+}
+
+.bar-customer {
+    background: linear-gradient(180deg, var(--red-400), var(--red-700));
+    box-shadow: 0 6px 12px -8px rgba(157, 2, 8, 0.9);
+}
+
+.bar-service {
+    background: linear-gradient(180deg, #5b4449, #1a0d10);
+}
+
+.chart-month {
+    display: block;
+    padding-top: 0.35rem;
+    text-align: center;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.chart-col.is-current .chart-month {
+    color: var(--red-700);
+}
+
+.chart-col.is-current .chart-bars {
+    background-color: rgba(255, 209, 102, 0.12);
+}
+
+.chart-empty-note {
+    grid-column: 1 / -1;
+    align-self: center;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+}
+
+/* =========================================================
    Toolbar Pencarian & Filter
    ========================================================= */
 .toolbar {
@@ -2645,6 +2896,23 @@ textarea.form-control {
         padding: 0.9rem;
     }
 
+    .monthly-panel {
+        padding: 1rem 0.95rem 0.85rem;
+    }
+
+    .monthly-summary {
+        width: 100%;
+    }
+
+    .summary-pill {
+        flex: 1 1 45%;
+    }
+
+    .monthly-chart {
+        height: 170px;
+        min-width: 0;
+    }
+
     .toolbar-controls {
         flex-direction: column;
     }
@@ -2737,6 +3005,7 @@ var appJS = strings.Join([]string{
 	"document.addEventListener(\"DOMContentLoaded\", () => {",
 	"    loadCarBrands();",
 	"    fetchCustomers();",
+	"    loadMonthlyStats();",
 	"",
 	"    searchInput.addEventListener(\"input\", debounce(() => {",
 	"        fetchCustomers();",
@@ -2797,6 +3066,94 @@ var appJS = strings.Join([]string{
 	"    } catch (err) {",
 	"        showAlert(\"Gagal memuat daftar konsumen\", \"danger\");",
 	"    }",
+	"}",
+	"",
+	"// Mengambil statistik konsumen & servis per bulan untuk diagram batang",
+	"async function loadMonthlyStats() {",
+	"    const chart = document.getElementById(\"monthlyChart\");",
+	"    if (!chart) return;",
+	"",
+	"    try {",
+	"        const res = await authFetch(\"/api/stats/monthly?months=12\");",
+	"        if (!res || !res.ok) {",
+	"            renderMonthlyChart(null);",
+	"            return;",
+	"        }",
+	"        renderMonthlyChart(await res.json());",
+	"    } catch (err) {",
+	"        console.error(\"Gagal memuat statistik bulanan:\", err);",
+	"        renderMonthlyChart(null);",
+	"    }",
+	"}",
+	"",
+	"// Menampilkan diagram batang konsumen baru dan riwayat servis per bulan",
+	"function renderMonthlyChart(data) {",
+	"    const chart = document.getElementById(\"monthlyChart\");",
+	"    const subtitle = document.getElementById(\"monthlySubtitle\");",
+	"    const monthlyCustomers = document.getElementById(\"monthlyCustomers\");",
+	"    const monthlyServices = document.getElementById(\"monthlyServices\");",
+	"    if (!chart) return;",
+	"",
+	"    const months = data && Array.isArray(data.months) ? data.months : [];",
+	"",
+	"    if (months.length === 0) {",
+	"        chart.style.gridTemplateColumns = \"1fr\";",
+	"        chart.innerHTML = '<p class=\"chart-empty-note\">Belum ada data statistik bulanan yang bisa ditampilkan.</p>';",
+	"        if (subtitle) subtitle.textContent = \"Data 12 bulan terakhir belum tersedia.\";",
+	"        if (monthlyCustomers) monthlyCustomers.textContent = \"0\";",
+	"        if (monthlyServices) monthlyServices.textContent = \"0\";",
+	"        return;",
+	"    }",
+	"",
+	"    // Hitung tinggi batang relatif terhadap nilai terbesar (skala 135 piksel)",
+	"    const maxValue = Math.max(",
+	"        1,",
+	"        ...months.map(m => Math.max(Number(m.new_customers) || 0, Number(m.services) || 0))",
+	"    );",
+	"",
+	"    chart.style.gridTemplateColumns = `repeat(${months.length}, minmax(0, 1fr))`;",
+	"    chart.innerHTML = months.map((m, index) => {",
+	"        const newCustomers = Number(m.new_customers) || 0;",
+	"        const services = Number(m.services) || 0;",
+	"        const customerHeight = newCustomers > 0",
+	"            ? Math.max(4, Math.round((newCustomers / maxValue) * 135))",
+	"            : 0;",
+	"        const serviceHeight = services > 0",
+	"            ? Math.max(4, Math.round((services / maxValue) * 135))",
+	"            : 0;",
+	"        const isCurrent = index === months.length - 1;",
+	"        const tooltip = `${m.label} ${m.year}: ${newCustomers} konsumen baru, ${services} riwayat servis`;",
+	"",
+	"        return `",
+	"            <div class=\"chart-col${isCurrent ? \" is-current\" : \"\"}\" title=\"${escapeHtml(tooltip)}\">",
+	"                <div class=\"chart-bars\">",
+	"                    <div class=\"chart-bar bar-customer\" style=\"height: ${customerHeight}px\">",
+	"                        ${newCustomers > 0 ? `<span>${newCustomers}</span>` : \"\"}",
+	"                    </div>",
+	"                    <div class=\"chart-bar bar-service\" style=\"height: ${serviceHeight}px\">",
+	"                        ${services > 0 ? `<span>${services}</span>` : \"\"}",
+	"                    </div>",
+	"                </div>",
+	"                <span class=\"chart-month\">${escapeHtml(m.label)}</span>",
+	"            </div>",
+	"        `;",
+	"    }).join(\"\");",
+	"",
+	"    const lastMonth = months[months.length - 1];",
+	"    if (monthlyCustomers) monthlyCustomers.textContent = Number(lastMonth.new_customers) || 0;",
+	"    if (monthlyServices) monthlyServices.textContent = Number(lastMonth.services) || 0;",
+	"",
+	"    if (subtitle) {",
+	"        const totals = data.totals || {};",
+	"        const totalCustomers = Number(totals.new_customers) || 0;",
+	"        const totalServices = Number(totals.services) || 0;",
+	"        subtitle.textContent = `${months.length} bulan terakhir · total ${totalCustomers} konsumen baru dan ${totalServices} riwayat servis.`;",
+	"    }",
+	"",
+	"    chart.setAttribute(",
+	"        \"aria-label\",",
+	"        `Diagram batang ${months.length} bulan terakhir. Konsumen baru bulan ini ${Number(lastMonth.new_customers) || 0}, riwayat servis bulan ini ${Number(lastMonth.services) || 0}.`",
+	"    );",
 	"}",
 	"",
 	"// Render data konsumen ke antarmuka kartu",
@@ -2941,6 +3298,7 @@ var appJS = strings.Join([]string{
 	"        showAlert(isEdit ? \"Data konsumen berhasil diperbarui!\" : \"Konsumen baru berhasil ditambahkan!\");",
 	"        loadCarBrands();",
 	"        fetchCustomers();",
+	"        loadMonthlyStats();",
 	"    } catch (err) {",
 	"        alert(\"Terjadi kesalahan server saat menyimpan data konsumen.\");",
 	"    }",
@@ -2962,6 +3320,7 @@ var appJS = strings.Join([]string{
 	"        showAlert(\"Data konsumen dan riwayat servis berhasil dihapus.\");",
 	"        loadCarBrands();",
 	"        fetchCustomers();",
+	"        loadMonthlyStats();",
 	"    } catch (err) {",
 	"        showAlert(\"Terjadi kesalahan server saat menghapus data\", \"danger\");",
 	"    }",
@@ -3015,6 +3374,7 @@ var appJS = strings.Join([]string{
 	"        closeServiceModal();",
 	"        showAlert(\"Riwayat servis baru berhasil dicatat!\");",
 	"        fetchCustomers();",
+	"        loadMonthlyStats();",
 	"    } catch (err) {",
 	"        alert(\"Terjadi kesalahan server saat mencatat servis.\");",
 	"    }",
@@ -3107,6 +3467,7 @@ var appJS = strings.Join([]string{
 	"            viewHistory(activeViewingCustomer.id);",
 	"        }",
 	"        fetchCustomers();",
+	"        loadMonthlyStats();",
 	"    } catch (err) {",
 	"        alert(\"Terjadi kesalahan server saat menghapus catatan.\");",
 	"    }",
@@ -3247,6 +3608,7 @@ func main() {
 
 		// Data Konsumen & Riwayat Servis
 		api.GET("/brands", handlers.GetCarBrands)
+		api.GET("/stats/monthly", handlers.GetMonthlyStats)
 		api.GET("/customers", handlers.GetCustomers)
 		api.GET("/customers/:id", handlers.GetCustomerByID)
 		api.POST("/customers", handlers.CreateCustomer)
