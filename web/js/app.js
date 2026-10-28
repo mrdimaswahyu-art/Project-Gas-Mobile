@@ -86,6 +86,12 @@ async function loadMonthlyStats() {
     const chart = document.getElementById("monthlyChart");
     if (!chart) return;
 
+    // Tampilkan state loading lebih awal agar panel tidak terlihat kosong
+    if (!chart.querySelector(".chart-col") && !chart.querySelector(".chart-empty-note")) {
+        chart.style.gridTemplateColumns = "1fr";
+        chart.innerHTML = '<p class="chart-empty-note" id="monthlyChartPlaceholder">Menampilkan diagram 12 bulan terakhir...</p>';
+    }
+
     try {
         const res = await authFetch("/api/stats/monthly?months=12");
         if (!res || !res.ok) {
@@ -117,6 +123,10 @@ function renderMonthlyChart(data) {
         if (monthlyServices) monthlyServices.textContent = "0";
         return;
     }
+
+    // Hapus placeholder kalau masih ada
+    const placeholder = chart.querySelector(".chart-empty-note");
+    if (placeholder) placeholder.remove();
 
     // Hitung tinggi batang relatif terhadap nilai terbesar (skala 135 piksel)
     const maxValue = Math.max(

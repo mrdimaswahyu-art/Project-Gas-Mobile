@@ -207,7 +207,9 @@ const indexHTML = `<!DOCTYPE html>
                 <span class="legend-item"><i class="legend-dot dot-service"></i> Riwayat Servis</span>
             </div>
             <div class="chart-scroll">
-                <div id="monthlyChart" class="monthly-chart" role="img" aria-label="Diagram batang jumlah konsumen baru dan riwayat servis per bulan"></div>
+                <div id="monthlyChart" class="monthly-chart" role="img" aria-label="Diagram batang jumlah konsumen baru dan riwayat servis per bulan">
+                    <p class="chart-empty-note" id="monthlyChartPlaceholder">Menampilkan diagram 12 bulan terakhir...</p>
+                </div>
             </div>
         </section>
 
@@ -3073,6 +3075,12 @@ var appJS = strings.Join([]string{
 	"    const chart = document.getElementById(\"monthlyChart\");",
 	"    if (!chart) return;",
 	"",
+	"    // Tampilkan state loading lebih awal agar panel tidak terlihat kosong",
+	"    if (!chart.querySelector(\".chart-col\") && !chart.querySelector(\".chart-empty-note\")) {",
+	"        chart.style.gridTemplateColumns = \"1fr\";",
+	"        chart.innerHTML = '<p class=\"chart-empty-note\" id=\"monthlyChartPlaceholder\">Menampilkan diagram 12 bulan terakhir...</p>';",
+	"    }",
+	"",
 	"    try {",
 	"        const res = await authFetch(\"/api/stats/monthly?months=12\");",
 	"        if (!res || !res.ok) {",
@@ -3104,6 +3112,10 @@ var appJS = strings.Join([]string{
 	"        if (monthlyServices) monthlyServices.textContent = \"0\";",
 	"        return;",
 	"    }",
+	"",
+	"    // Hapus placeholder kalau masih ada",
+	"    const placeholder = chart.querySelector(\".chart-empty-note\");",
+	"    if (placeholder) placeholder.remove();",
 	"",
 	"    // Hitung tinggi batang relatif terhadap nilai terbesar (skala 135 piksel)",
 	"    const maxValue = Math.max(",
